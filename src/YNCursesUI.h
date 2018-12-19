@@ -29,6 +29,7 @@
 #include <iosfwd>
 
 #include <yui/YUI.h>
+#include <YHttpServer.h>
 #include "NCApplication.h"
 #include "NCurses.h"
 
@@ -124,6 +125,13 @@ public:
      * with sendWidgetID(). This returns the widget or 0 if not found.
      **/
     YWidget * askSendWidgetID();
+
+    /**
+    * The debugging HTTP server providing the YUI REST API
+    * nullptr if not used
+    **/
+   static YHttpServer * server();
+
 };
 
 
@@ -137,4 +145,3 @@ YUI * createUI( bool withThreads );
 
 
 #endif // YNCursesUI_h
-

@@ -6,7 +6,7 @@ SET( BASELIB		"yui" )		# don't change this
 
 SET( SUBDIRS		src )
 SET( PLUGINNAME		"ncurses" )
-SET( LIB_DEPS		Curses6)
+SET( LIB_DEPS		Curses6 Libyui-testframework)
 SET( INTERNAL_DEPS	Libyui )
 SET( LIB_LINKER		)
 SET( URL		"http://github.com/libyui/" )

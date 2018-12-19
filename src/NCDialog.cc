@@ -36,7 +36,7 @@ textdomain "ncurses"
 #include "YNCursesUI.h"
 #include <yui/YDialogSpy.h>
 #include <yui/YDialog.h>
-#include <yui/YHttpServer.h>
+#include <YHttpServer.h>
 
 #include "ncursesw.h"
 
@@ -834,10 +834,10 @@ static int wait_for_input(int timeout_millisec)
         int fd_max = 0;
 
         // watch HTTP server fd
-        if (YUI::server())
+        if (YNCursesUI::server())
         {
             yuiMilestone() << "Adding HTTP server notifiers..." << std::endl;
-            YHttpServerSockets sockets = YUI::server()->sockets();
+            YHttpServerSockets sockets = YNCursesUI::server()->sockets();
 
             for(int fd: sockets.read())
             {
@@ -869,9 +869,9 @@ static int wait_for_input(int timeout_millisec)
         }
         else if ( retval != 0 )
         {
-            if (YUI::server())
+            if (YNCursesUI::server())
             {
-                YHttpServerSockets sockets = YUI::server()->sockets();
+                YHttpServerSockets sockets = YNCursesUI::server()->sockets();
                 bool server_ready = false;
 
                 for(int fd: sockets.read())
@@ -896,7 +896,7 @@ static int wait_for_input(int timeout_millisec)
 
                 if (server_ready)
                 {
-                    bool redraw = YUI::server()->process_data();
+                    bool redraw = YNCursesUI::server()->process_data();
 
                     if (timeout_millisec > 0)
                     {

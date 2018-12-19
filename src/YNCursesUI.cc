@@ -35,9 +35,9 @@ textdomain "ncurses"
 #include <yui/YCommandLine.h>
 #include <yui/YDialog.h>
 #include <yui/YEvent.h>
-#include <yui/YHttpServer.h>
 #include <yui/YMacro.h>
 #include <yui/YUI.h>
+#include <yui/YUILoader.h>
 
 #define YUILogComponent "ncurses"
 #include <yui/YUILog.h>
@@ -52,7 +52,7 @@ textdomain "ncurses"
 extern std::string language2encoding( std::string lang );
 
 YNCursesUI * YNCursesUI::_ui = 0;
-
+YHttpServer *_server = nullptr;
 
 YUI * createUI( bool withThreads )
 {
@@ -146,6 +146,18 @@ YNCursesUI::createApplication()
     NCApplication * app = new NCApplication();
     YUI_CHECK_NEW( app );
 
+    YUIPlugin uiPlugin( YUIPlugin_Test );
+    if ( uiPlugin.success() )
+    {
+            yuiMilestone () << "###################Loading http server to control UI." << std::endl;
+            typedef YHttpServer* (*createServerFunction_t)();
+            //_Z12createServerv
+            createServerFunction_t createServer = (createServerFunction_t) uiPlugin.locateSymbol( "createServer" );
+            // Error will be already reported by locateSymbol if method not found
+            if ( createServer )
+                _server = createServer();
+    }
+
     return app;
 }
 
@@ -174,10 +186,10 @@ void YNCursesUI::idleLoop( int fd_ycp )
     int fd_max = fd_ycp;
 
     // watch HTTP server fd
-    if (YUI::server())
+    if (getenv("YUI_HTTP_PORT"))
     {
         yuiMilestone() << "Adding HTTP server notifiers..." << std::endl;
-        YHttpServerSockets sockets = YUI::server()->sockets();
+        YHttpServerSockets sockets = _server->sockets();
 
         for(int fd: sockets.read())
         {
@@ -210,9 +222,9 @@ void YNCursesUI::idleLoop( int fd_ycp )
 	}
 	else if ( retval != 0 )
 	{
-        if (YUI::server())
+        if (getenv("YUI_HTTP_PORT"))
         {
-            YHttpServerSockets sockets = YUI::server()->sockets();
+            YHttpServerSockets sockets = _server->sockets();
             bool server_ready = false;
 
             for(int fd: sockets.read())
@@ -236,7 +248,7 @@ void YNCursesUI::idleLoop( int fd_ycp )
             yuiWarning() << "Server ready: " << server_ready << std::endl;
 
             if (server_ready)
-                YUI::server()->process_data();
+                _server->process_data();
         }
 
 	    //do not throw here, as current dialog may not necessarily exist yet
@@ -511,4 +523,9 @@ YWidget * YNCursesUI::askSendWidgetID()
     }
 
     return 0;
+}
+
+YHttpServer *YNCursesUI::server()
+{
+    return _server;
 }
