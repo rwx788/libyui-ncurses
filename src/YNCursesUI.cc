@@ -146,18 +146,6 @@ YNCursesUI::createApplication()
     NCApplication * app = new NCApplication();
     YUI_CHECK_NEW( app );
 
-    YUIPlugin uiPlugin( YUIPlugin_Test );
-    if ( uiPlugin.success() )
-    {
-            yuiMilestone () << "###################Loading http server to control UI." << std::endl;
-            typedef YHttpServer* (*createServerFunction_t)();
-            //_Z12createServerv
-            createServerFunction_t createServer = (createServerFunction_t) uiPlugin.locateSymbol( "createServer" );
-            // Error will be already reported by locateSymbol if method not found
-            if ( createServer )
-                _server = createServer();
-    }
-
     return app;
 }
 
@@ -170,6 +158,20 @@ void YNCursesUI::idleLoop( int fd_ycp )
     struct timeval tv;
     fd_set fdset_read, fdset_write, fdset_excpt;
     int	   retval;
+
+    if (getenv("YUI_HTTP_PORT"))
+    {
+    YUIPlugin uiPlugin( "testframework" );
+    if ( uiPlugin.success() )
+    {
+            typedef YHttpServer* (*createServerFunction_t)();
+            //_Z12createServerv
+            createServerFunction_t getServer = (createServerFunction_t) uiPlugin.locateSymbol( "getServer" );
+            // Error will be already reported by locateSymbol if method not found
+            if ( getServer )
+                _server = getServer();
+    }
+}
 
     do
     {
