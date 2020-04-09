@@ -25,6 +25,7 @@
 #define  YUILogComponent "ncurses"
 #include <yui/YUILog.h>
 #include "NCSelectionBox.h"
+#include "YNCursesUI.h"
 
 
 
@@ -250,4 +251,11 @@ void NCSelectionBox::deleteAllItems()
     YSelectionBox::deleteAllItems();
     clearTable();
     DrawPad();
+}
+
+void NCSelectionBox::activate()
+{
+    NCursesEvent event = NCursesEvent::Activated;
+    event.widget = this;
+    YNCursesUI::ui()->sendEvent(event);
 }
