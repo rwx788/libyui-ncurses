@@ -131,6 +131,11 @@ public:
     // if appropriate
     void setInputMaxLength( int  nr );
 
+    /**
+     * Activate selected item. Can be used in tests to simulate user input.
+     * Should be called in case selected item should affect other controls.
+     **/
+    virtual void activate();
 };
 
 

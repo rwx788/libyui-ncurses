@@ -29,6 +29,7 @@
 #include "NCurses.h"
 #include "NCComboBox.h"
 #include "NCPopupList.h"
+#include "YNCursesUI.h"
 
 
 NCComboBox::NCComboBox( YWidget * parent, const std::string & nlabel,
@@ -624,4 +625,12 @@ void NCComboBox::setInputMaxLength( int nr )
     }
 
     YComboBox::setInputMaxLength( nr );
+}
+
+
+void NCComboBox::activate()
+{
+    NCursesEvent event = NCursesEvent::Activated;
+    event.widget = this;
+    YNCursesUI::ui()->sendEvent(event);
 }
