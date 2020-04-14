@@ -25,6 +25,7 @@
 #define  YUILogComponent "ncurses"
 #include <yui/YUILog.h>
 #include "NCMultiSelectionBox.h"
+#include "YNCursesUI.h"
 
 
 NCMultiSelectionBox::NCMultiSelectionBox( YWidget * parent,
@@ -278,3 +279,14 @@ NCursesEvent NCMultiSelectionBox::wHandleInput( wint_t key )
     return ret;
 }
 
+void NCMultiSelectionBox::activateItem( YItem * item )
+{
+    if ( notify() )
+    {
+        NCursesEvent event( NCursesEvent::menu );
+        event.selection = (YMenuItem *) item;
+        event.widget = this;
+
+        YNCursesUI::ui()->sendEvent( event );
+    }
+}

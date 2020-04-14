@@ -113,6 +113,11 @@ public:
     const NCTableLine * getLine( int index ) { return myPad()->GetLine( index ); }
 
     void clearItems() { return myPad()->ClearTable(); }
+
+    /**
+     * Activate selected item. Can be used in tests to simulate user input.
+     **/
+    virtual void activateItem( YItem * item );
 };
 
 
