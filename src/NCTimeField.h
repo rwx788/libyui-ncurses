@@ -43,7 +43,7 @@ class NCTimeField : public YTimeField, public NCInputTextBase
 
 private:
   static const unsigned fieldLength;
-  
+
   bool validTime(const std::string& input_time);
 
 protected:
@@ -81,6 +81,11 @@ public:
 
     return true;
   }
+
+  /**
+   * Activate widget to trigger UI update. Can be used in tests to simulate user input.
+   **/
+  virtual void activate();
 
 };
 

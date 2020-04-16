@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Angelo Naselli 
+  Copyright (C) 2014 Angelo Naselli
 
   This library is free software; you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -31,10 +31,11 @@
 #include "NCurses.h"
 #include "NCTimeField.h"
 #include "NCInputTextBase.h"
+#include "YNCursesUI.h"
 
 #include <wctype.h>		// iswalnum()
 
-  
+
 const unsigned NCTimeField::fieldLength = 8;
 
 NCTimeField::NCTimeField ( YWidget * parent,
@@ -99,16 +100,16 @@ bool NCTimeField::validTime(const std::string& input_time)
   tm tm1;
   std::stringstream ss;
   ss << input_time;
-  char c; 
-  
+  char c;
+
   if (!(ss >> tm1.tm_hour))
     return false;
   ss >> c;
-  
+
   if (!(ss >> tm1.tm_min))
     return false;
   ss >> c;
-  
+
   if (!(ss >> tm1.tm_sec))
     return false;
 
@@ -290,7 +291,7 @@ NCursesEvent NCTimeField::wHandleInput ( wint_t key )
             std::string buf = NCstring(buffer).Str();
             buffer.erase ( curpos, 1 );
             buffer.insert ( std::wstring::size_type ( curpos ), 1, key );
-            
+
             if (validTime(NCstring(buffer).Str()))
             {
                 if ( curpos == 1 || curpos == 4 )
@@ -335,3 +336,10 @@ NCursesEvent NCTimeField::wHandleInput ( wint_t key )
 }
 
 
+void NCTimeField::activate()
+{
+    // send an activation event for this widget
+    NCursesEvent event = NCursesEvent::Activated;
+    event.widget = this;
+    YNCursesUI::ui()->sendEvent(event);
+}

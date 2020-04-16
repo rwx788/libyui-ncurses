@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Angelo Naselli 
+  Copyright (C) 2014 Angelo Naselli
 
   This library is free software; you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -33,6 +33,7 @@
 #include "NCurses.h"
 #include "NCDateField.h"
 #include "NCInputTextBase.h"
+#include "YNCursesUI.h"
 
 using namespace boost::gregorian;
 
@@ -97,13 +98,13 @@ bool NCDateField::validDate(const std::string& input_date)
   date d;
   ss << input_date.c_str();
   ss >> d;
-  
+
   return d != date();
 }
 
 
 void NCDateField::setValue ( const std::string & ntext )
-{  
+{
   if ( validDate(ntext) )
   {
     buffer = NCstring ( ntext ).str();
@@ -284,7 +285,7 @@ NCursesEvent NCDateField::wHandleInput ( wint_t key )
               if ( curpos < maxCursor() )
                 ++curpos;
           }
-          else 
+          else
           {
             update = false;
             setValue(buf);
@@ -320,4 +321,10 @@ NCursesEvent NCDateField::wHandleInput ( wint_t key )
 
 }
 
-
+void NCDateField::activate()
+{
+    // send an activation event for this widget
+    NCursesEvent event = NCursesEvent::Activated;
+    event.widget = this;
+    YNCursesUI::ui()->sendEvent(event);
+}

@@ -42,16 +42,16 @@ class NCDateField : public YDateField, public NCInputTextBase
 
 private:
   static const unsigned fieldLength;
-  
+
   bool validDate(const std::string& input_date);
- 
+
 protected:
 
   virtual const char * location() const
   {
     return "NCDateField";
   }
- 
+
 public:
 
   NCDateField ( YWidget * parent,
@@ -63,7 +63,7 @@ public:
   virtual int preferredHeight();
 
   virtual void setSize ( int newWidth, int newHeight );
-  
+
   virtual void setLabel ( const std::string & nlabel );
 
   virtual void setValue ( const std::string & ntext );
@@ -80,7 +80,12 @@ public:
 
     return true;
   }
-  
+
+  /**
+   * Activate widget to trigger UI update. Can be used in tests to simulate user input.
+   **/
+  virtual void activate();
+
 };
 
 
